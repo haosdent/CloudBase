@@ -7,7 +7,7 @@
 
 (defroutes all-routes
   (GET  "/:table/:row/:version" [] model/get)
-  (PUT  "/:table"               [])
+  (PUT  "/:table/:row/:version" [] model/put)
   (POST "/:table"               [] model/create)) 
 
 
