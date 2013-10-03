@@ -1,7 +1,7 @@
 (ns cloud-base.route
   (:use [compojure.route :only [files not-found]]
         [compojure.handler :only [site]]
-        [compojure.core :only [defroutes GET POST DELETE ANY context]]
+        [compojure.core :only [defroutes GET POST DELETE PUT ANY context]]
         org.httpkit.server)
   (:require [cloud-base.model :as model])) 
 

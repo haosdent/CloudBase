@@ -1,4 +1,4 @@
-package java.cloud_base;
+package cloud_base;
 
 import java.io.IOException;
 import java.util.HashMap;
