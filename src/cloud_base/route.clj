@@ -6,8 +6,21 @@
   (:require [cloud-base.model :as model])) 
 
 (defroutes all-routes
-  (GET  "/:table/:row/:version" [] model/get)
-  (PUT  "/:table/:row/:version" [] model/put)
-  (POST "/:table"               [] model/create)) 
+  (GET  "/:table/:row/:version" [] 
+        #(model/get 
+          (-> % :params :table)
+          (-> % :params :row)
+          (-> % :params :version))) 
+
+  (PUT  "/:table/:row/:version" []
+        #(model/put
+          (-> % :params :table)
+          (-> % :params :row)
+          (-> % :params :version)
+          (-> % :params :data)))  
+
+  (POST "/:table"               []
+        #(model/create 
+          (-> % :params :table))))   
 
 

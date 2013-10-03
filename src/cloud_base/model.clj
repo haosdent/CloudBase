@@ -1,4 +1,5 @@
 (ns cloud-base.model
+  (:refer-clojure :exclude [get])
   (:import [cloud_base DB])) 
 
 (defn get [table row version]
@@ -9,3 +10,4 @@
 
 (defn create [table]
   (DB/create table))
+
