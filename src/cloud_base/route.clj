@@ -10,13 +10,13 @@
         #(model/get 
           (-> % :params :table)
           (-> % :params :row)
-          (-> % :params :version))) 
+          (read-string (-> % :params :version)))) 
 
   (PUT  "/:table/:row/:version" []
         #(model/put
           (-> % :params :table)
           (-> % :params :row)
-          (-> % :params :version)
+          (read-string (-> % :params :version))
           (-> % :params :data)))  
 
   (POST "/:table"               []

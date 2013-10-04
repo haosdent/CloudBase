@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [http-kit "2.1.10"]
                  [compojure "1.1.5"]
+                 [cheshire "5.2.0"]
                  [org.apache.hbase/hbase "0.94.0"]
                  [org.apache.hadoop/hadoop-core "1.2.1"]
                  [org.apache.hadoop/hadoop-client "1.2.1"]] 

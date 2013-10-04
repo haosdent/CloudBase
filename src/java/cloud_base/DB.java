@@ -8,6 +8,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.MasterNotRunningException;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
@@ -33,7 +35,19 @@ public class DB {
   private static HTablePool getPool = new HTablePool(conf, HPOOL_SIZE,
       PoolMap.PoolType.ThreadLocal);
 
+  static {
+    init();
+  }
+
   public static void init() {
+    conf.setInt("hbase.zookeeper.property.clientPort", 40060);
+    conf.set("hbase.zookeeper.quorum", "10.232.98.94,10.232.98.72,10.232.98.40");
+    conf.set("zookeeper.znode.parent", "/hbase-cdh4");
+    try {
+      admin = new HBaseAdmin(conf);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static void create(String table) {
@@ -73,11 +87,11 @@ public class DB {
       get.setMaxVersions(1);
       Result r = htable.get(get);
       byte[] dataBytes = r.getValue(FAMILY_NAME_BYTES, KEY_DATA_BYTES);
-      if(dataBytes != null){
+      if (dataBytes != null) {
         String data = Bytes.toString(dataBytes);
         version = r.raw()[0].getTimestamp();
         obj.put(KEY_VERSION, version);
-        obj.put(KEY_DATA, data);        
+        obj.put(KEY_DATA, data);
       }
     } catch (IOException e) {
       e.printStackTrace();
