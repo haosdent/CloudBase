@@ -10,12 +10,17 @@
   (:import [java.util HashMap]))  
 
 (extend-protocol Renderable
+  Boolean
+  (render [_ _]
+    (-> (response nil))) 
   HashMap
   (render [map _]
     (-> (response (generate-string map))
         (content-type "application/json; charset=utf-8"))))
 
 (defroutes all-routes
+  (files "/" {:root "examples/web"})
+  
   (GET  "/:table/:row/:version" [] 
         #(model/get 
           (-> % :params :table)
@@ -33,6 +38,6 @@
         #(model/create 
           (-> % :params :table)))
 
-  (not-found "404"))    
+  (not-found "404"))     
 
 

@@ -50,18 +50,20 @@ public class DB {
     }
   }
 
-  public static void create(String table) {
+  public static boolean create(String table) {
     HTableDescriptor tableDesc = new HTableDescriptor(table);
     HColumnDescriptor colDesc = new HColumnDescriptor(FAMILY_NAME);
     tableDesc.addFamily(colDesc);
     try {
-      admin.createTable(tableDesc);
+      if (!admin.tableExists(table))
+        admin.createTable(tableDesc);
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return true;
   }
 
-  public static void put(String table, String row, long version, String data) {
+  public static boolean put(String table, String row, long version, String data) {
     Put put = new Put(Bytes.toBytes(row));
     put.add(FAMILY_NAME_BYTES, KEY_DATA_BYTES, version, Bytes.toBytes(data));
     HTableInterface htable = putPool.getTable(table);
@@ -76,6 +78,7 @@ public class DB {
         e.printStackTrace();
       }
     }
+    return true;
   }
 
   public static Map<String, Object> get(String table, String row, long version) {

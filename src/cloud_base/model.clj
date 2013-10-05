@@ -6,9 +6,9 @@
   (DB/get table row version))  
 
 (defn put [table row version data]
-  (DB/put table row version data)) 
+  (DB/put table row version data))  
 
 (defn create [table]
-  (DB/create table))
+  (DB/create table)) 
 
 
