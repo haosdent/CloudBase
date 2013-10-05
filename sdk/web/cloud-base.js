@@ -1,7 +1,8 @@
 (function(){
+    var urlPrefix = 'http://localhost:8080';
     var App = function(name){
         this.name = name;
-        var url = '/' + name;
+        var url = urlPrefix + '/' + name;
         $.post(url)
         .success(function(){
             console.log('Create app successfully!');
@@ -34,13 +35,13 @@
     Model.prototype = {
         save: function(){
             var version = Date.now();
-            var url = '/' + this.getter('app').name + '/' + this.id + '/' + version;
+            var url = urlPrefix + '/' + this.getter('app').name + '/' + this.id + '/' + version;
             var json = JSON.stringify(this);
             var that = this;
 
             $.ajax({
                 url: url
-              , type: 'PUT'
+              , type: 'POST'
               , data: 'data=' + json
             }).success(function(){
                 that.setter('version', version);
@@ -56,7 +57,7 @@
             var ajax = function(){
                 var version = that.getter('version');
                 (version === undefined) && (version = 0);
-                var url = '/' + that.getter('app').name + '/' + that.id + '/' + version;
+                var url = urlPrefix + '/' + that.getter('app').name + '/' + that.id + '/' + version;
                 $.get(url)
                 .success(function(resp){
                     if (!resp.version) return;

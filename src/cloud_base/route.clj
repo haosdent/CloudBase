@@ -3,7 +3,7 @@
         [compojure.handler :only [site]]
         [compojure.response :only [Renderable]]
         [compojure.core :only [defroutes GET POST DELETE PUT ANY context]]
-        [ring.util.response :only (response content-type)]
+        [ring.util.response :only (response content-type header)]
         cheshire.core
         org.httpkit.server)
   (:require [cloud-base.model :as model])
@@ -12,14 +12,16 @@
 (extend-protocol Renderable
   Boolean
   (render [_ _]
-    (-> (response nil))) 
+    (-> (response nil)
+        (header "Access-Control-Allow-Origin" "*")))  
   HashMap
   (render [map _]
     (-> (response (generate-string map))
-        (content-type "application/json; charset=utf-8"))))
+        (content-type "application/json; charset=utf-8")
+        (header "Access-Control-Allow-Origin" "*")))) 
 
 (defroutes all-routes
-  (files "/" {:root "examples/web"})
+  (files "/" {:root "sdk/web"})
   
   (GET  "/:table/:row/:version" [] 
         #(model/get 
@@ -27,7 +29,7 @@
           (-> % :params :row)
           (read-string (-> % :params :version)))) 
 
-  (PUT  "/:table/:row/:version" []
+  (POST "/:table/:row/:version" []
         #(model/put
           (-> % :params :table)
           (-> % :params :row)
