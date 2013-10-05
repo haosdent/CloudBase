@@ -44,7 +44,6 @@
               , type: 'POST'
               , data: 'data=' + json
             }).success(function(){
-                that.setter('version', version);
                 console.log('Create model successfully!');
             }).error(function(){
                 console.log('Error when create model!');
