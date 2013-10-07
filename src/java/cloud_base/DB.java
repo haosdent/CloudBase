@@ -95,6 +95,8 @@ public class DB {
         version = r.raw()[0].getTimestamp();
         obj.put(KEY_VERSION, version);
         obj.put(KEY_DATA, data);
+      } else if (version == 0) {
+        put(table, row, System.currentTimeMillis(), "{}");
       }
     } catch (IOException e) {
       e.printStackTrace();
