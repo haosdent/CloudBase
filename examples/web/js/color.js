@@ -1,7 +1,7 @@
-/*var app = new App('hello');
+var app = new App('hello');
 
 var cb = function(){
-    $('#point').text('Click Count:' + this.count);
+    $('#count').text('Count:' + this.count);
 };
 
 var model = app.create('one', 'hi', cb);
@@ -13,4 +13,4 @@ $('#point').click(function(){
         model.count = 0;
         model.save();
     };
-});*/
+});

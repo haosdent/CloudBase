@@ -8,12 +8,19 @@
             that.receive(e);
         };
         this.listeners = {};
+        this.queue = [];
     };
 
     Socket.prototype =  {
         send: function(req){
             req.rid = Date.now();
-            this.entity.send(JSON.stringify(req));
+            //FIXME.
+            this.queue.push(req);
+            if(this.entity.readyState === this.entity.OPEN && this.queue.length !== 0){
+                for(; (req = this.queue.shift()) !== undefined;){
+                    this.entity.send(JSON.stringify(req));
+                };
+            };
         }
       , receive: function(e){
             var resp = JSON.parse(e.data);
