@@ -12,14 +12,18 @@
     };
 
     Socket.prototype =  {
-        send: function(req){
+        send: function(req, isForce){
             req.rid = Date.now();
-            //FIXME.
-            this.queue.push(req);
-            if(this.entity.readyState === this.entity.OPEN && this.queue.length !== 0){
-                for(; (req = this.queue.shift()) !== undefined;){
-                    this.entity.send(JSON.stringify(req));
+            if(this.entity.readyState === this.entity.OPEN){
+                if(this.queue.length !== 0){
+                    var oldReq;
+                    for(; (oldReq = this.queue.shift()) !== undefined;){
+                        this.entity.send(JSON.stringify(oldReq));
+                    };
                 };
+                this.entity.send(JSON.stringify(req));
+            }else if(this.entity.readyState !== this.entity.OPEN && isForce){
+                this.queue.push(req);
             };
         }
       , receive: function(e){
@@ -52,7 +56,7 @@
           , app: this.name
           , gid: this.name
         };
-        socket.send(req);
+        socket.send(req, true);
     };
 
     App.prototype = {
@@ -101,7 +105,7 @@
             };
             var that = this;
 
-            socket.send(req);
+            socket.send(req, true);
         }
       , on: function(cb){
             //this.getter('app').listen(this, cb);
@@ -118,8 +122,8 @@
                                    , version: version
                                  };
 
-                                 socket.send(req);
-                             }, 1000);
+                                 socket.send(req, false);
+                             }, 100);
             this.setter('intervalId', intervalId);
         }
       , up: function(){

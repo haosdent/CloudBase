@@ -1,16 +1,23 @@
-var app = new App('hello');
+var app = new App('example');
 
-var cb = function(){
-    $('#count').text('Count:' + this.count);
-};
+var model = app.create('1', 'color', function(){
+                var html = '';
+                for(var k in this){
+                    var v = this[k];
+                    if(typeof v !== 'function' && k !== 'id' && k !== 'name'){
+                        html += '<li><input type="color" value="' + k + '" disabled><span>' + v + '次选择</span></li>';
+                    };
+                };
+                $('#colors').html(html);
+            });
 
-var model = app.create('one', 'hi', cb);
-$('#point').click(function(){
-    if(model.count !== undefined){
-        model.count++;
-        model.save();
-    }else{
-        model.count = 0;
-        model.save();
-    };
+$('#colors').on('click', 'li', function(){
+    var kind = $('input', this).val();
+    model[kind]++;
+    model.save();
+});
+
+$('#add-color').click(function(){
+    model[$('#color-select').val()] = 1;
+    model.save();
 });

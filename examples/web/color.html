@@ -1,14 +1,33 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>最喜欢的颜色</title>
+    <style type="text/css">
+      li:hover {
+        background: yellow;
+      }
+      li {
+        font-size: 25px;
+        cursor: pointer;
+        -webkit-user-select: none;
+      }
+      p {
+        margin: 15px;
+      }
+      input {
+        font-size: 20px;
+        margin: 0 5px;
+      }
+    </style>
   </head>
 
   <body>
-    <h1 id="count">Count:</h1>
-    <button id="point">Click me</button>
-    <script type="text/javascript" src="/js/jquery.js"></script>
+    <h1>最喜欢的颜色</h1>
+    <p><input type="color" id="color-select"><input type="button" value="增加" id="add-color"></p>
+    <ul id="colors">
+    </ul>
     <script type="text/javascript" src="http://localhost:9000/cloud-base.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/color.js"></script>
   </body>
 </html>
