@@ -1,6 +1,7 @@
-package cloud_base;
+package cloud_base.model;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,77 +37,62 @@ public class DB {
       PoolMap.PoolType.ThreadLocal);
 
   static {
-    init();
+    try {
+      init();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  public static void init() {
+  public static void init() throws IOException {
     conf.setInt("hbase.zookeeper.property.clientPort", 40060);
     conf.set("hbase.zookeeper.quorum", "10.232.98.94,10.232.98.72,10.232.98.40");
     conf.set("zookeeper.znode.parent", "/hbase-cdh4");
-    try {
-      admin = new HBaseAdmin(conf);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    admin = new HBaseAdmin(conf);
   }
 
-  public static boolean create(String table) {
+  public static void create(String table) throws IOException {
     HTableDescriptor tableDesc = new HTableDescriptor(table);
     HColumnDescriptor colDesc = new HColumnDescriptor(FAMILY_NAME);
     tableDesc.addFamily(colDesc);
+    boolean isExist = false;
     try {
-      if (!admin.tableExists(table))
-        admin.createTable(tableDesc);
-    } catch (Exception e) {
-      e.printStackTrace();
+      isExist = admin.tableExists(table);
+    } catch (UnknownHostException e) {
+      System.out.println("WARN:" + e.getMessage());
     }
-    return true;
+    if (!isExist) {
+      admin.createTable(tableDesc);
+    }
   }
 
-  public static boolean put(String table, String row, long version, String data) {
+  public static void put(String table, String row, long version, String data)
+      throws IOException {
     Put put = new Put(Bytes.toBytes(row));
     put.add(FAMILY_NAME_BYTES, KEY_DATA_BYTES, version, Bytes.toBytes(data));
     HTableInterface htable = putPool.getTable(table);
-    try {
-      htable.put(put);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        htable.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return true;
+    htable.put(put);
+    htable.close();
   }
 
-  public static Map<String, Object> get(String table, String row, long version) {
+  public static Map<String, Object> get(String table, String row, long version)
+      throws IOException {
     Get get = new Get(Bytes.toBytes(row));
     HTableInterface htable = getPool.getTable(table);
     Map<String, Object> obj = new HashMap<String, Object>();
-    try {
-      get.setTimeRange(version + 1, Long.MAX_VALUE);
-      get.setMaxVersions(1);
-      Result r = htable.get(get);
-      byte[] dataBytes = r.getValue(FAMILY_NAME_BYTES, KEY_DATA_BYTES);
-      if (dataBytes != null) {
-        String data = Bytes.toString(dataBytes);
-        version = r.raw()[0].getTimestamp();
-        obj.put(KEY_VERSION, version);
-        obj.put(KEY_DATA, data);
-      } else if (version == 0) {
-        put(table, row, System.currentTimeMillis(), "{}");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        htable.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    get.setTimeRange(version + 1, Long.MAX_VALUE);
+    get.setMaxVersions(1);
+    Result r = htable.get(get);
+    byte[] dataBytes = r.getValue(FAMILY_NAME_BYTES, KEY_DATA_BYTES);
+    if (dataBytes != null) {
+      String data = Bytes.toString(dataBytes);
+      version = r.raw()[0].getTimestamp();
+      obj.put(KEY_VERSION, version);
+      obj.put(KEY_DATA, data);
+    } else if (version == 0) {
+      put(table, row, System.currentTimeMillis(), "{}");
     }
+    htable.close();
     return obj;
   }
 }

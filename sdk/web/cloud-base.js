@@ -1,14 +1,51 @@
 (function(){
-    var urlPrefix = 'http://localhost:8080';
+    var server = 'ws://localhost:8080';
+
+    var Socket = function(server){
+        var that = this;
+        this.entity = new WebSocket(server);
+        this.entity.onmessage = function(e){
+            that.receive(e);
+        };
+        this.listeners = {};
+    };
+
+    Socket.prototype =  {
+        send: function(req){
+            req.rid = Date.now();
+            this.entity.send(JSON.stringify(req));
+        }
+      , receive: function(e){
+            var resp = JSON.parse(e.data);
+            var cmd = resp.cmd;
+            var gid = resp.gid;
+            if(cmd === 'error' || cmd === 'success')
+              this[cmd](resp);
+            this.listeners[gid][cmd](resp);
+        }
+      , register: function(gid, obj){
+            this.listeners[gid] = obj;
+        }
+      , error: function(resp){
+            console.error('Rid: ' + resp.rid + ', Obj: ' + resp.gid + ', Act: ' + resp.act + ', Result: error!');
+        }
+      , success: function(resp){
+            console.log('Rid: ' + resp.rid + ', Obj: ' + resp.gid + ', Act: ' + resp.act + ', Result: success!');
+        }
+    };
+
+    var socket = new Socket(server);
+
     var App = function(name){
         this.name = name;
-        var url = urlPrefix + '/' + name;
-        $.post(url)
-        .success(function(){
-            console.log('Create app successfully!');
-        }).error(function(){
-            console.log('Error when create app!');
-        });
+        socket.register(this.name, this);
+
+        var req = {
+            act: 'create'
+          , app: this.name
+          , gid: this.name
+        };
+        socket.send(req);
     };
 
     App.prototype = {
@@ -16,66 +53,83 @@
             var model = new Model(this, id, name, cb);
             return model;
         }
+      , update: function(resp){
+            console.log('Create ' + this.name + ' successfully!');
+        }
+      , error: function(resp){
+        }
+      , success: function(resp){
+        }
     };
 
     var Model = function(app, id, name, cb){
         this.name = name;
         this.id = id;
-        var hidden = {app: app};
+        this.cb = cb;
+
+        var gid = app.name + this.name + this.id;
+        var hidden = {app: app, gid: gid};
+        socket.register(gid, this);
         this.getter = function(k){
             return hidden[k];
         };
         this.setter = function(k, v){
             hidden[k] = v;
         };
+
         //this.save();
-        this.on(cb);
+        this.on();
     };
 
     Model.prototype = {
         save: function(){
             var version = Date.now();
-            var url = urlPrefix + '/' + this.getter('app').name + '/' + this.id + '/' + version;
-            var json = JSON.stringify(this);
+            var req = {
+                act: 'put'
+              , app: this.getter('app').name
+              , id: this.id
+              , gid: this.getter('gid')
+              , version: version
+              , data: JSON.stringify(this)
+            };
             var that = this;
 
-            $.ajax({
-                url: url
-              , type: 'POST'
-              , data: 'data=' + json
-            }).success(function(){
-                console.log('Create model successfully!');
-            }).error(function(){
-                console.log('Error when create model!');
-            });
+            socket.send(req);
         }
       , on: function(cb){
             //this.getter('app').listen(this, cb);
             this.up();
             var that = this;
-            var ajax = function(){
-                var version = that.getter('version');
-                (version === undefined) && (version = 0);
-                var url = urlPrefix + '/' + that.getter('app').name + '/' + that.id + '/' + version;
-                $.get(url)
-                .success(function(resp){
-                    if (!resp.version) return;
-                    that.setter('version', resp.version);
-                    var newObj = JSON.parse(resp.data);
-                    for(var k in newObj){
-                        that[k] = newObj[k];
-                    };
-                    cb.call(that);
-                }).error(function(){
-                    console.log('Error when update!');
-                }).always(function(){
-                    that.setter('timeoutId', setTimeout(ajax, 1000));
-                });
-            };
-            ajax();
+            var intervalId = setInterval(function(){
+                                 var version = that.getter('version');
+                                 (version === undefined) && (version = 0);
+                                 var req = {
+                                     act: 'get'
+                                   , app: that.getter('app').name
+                                   , id: that.id
+                                   , gid: that.getter('gid')
+                                   , version: version
+                                 };
+
+                                 socket.send(req);
+                             }, 1000);
+            this.setter('intervalId', intervalId);
         }
       , up: function(){
-            clearTimeout(this.getter('timeoutId'));
+            clearInterval(this.getter('intervalId'));
+        }
+      , update: function(resp){
+            if (!resp.version) return;
+            this.setter('version', resp.version);
+            var newObj = JSON.parse(resp.data);
+            for(var k in newObj){
+                this[k] = newObj[k];
+            };
+            this.cb();
+        }
+      , error: function(resp){
+        }
+      , success: function(resp){
         }
     }
 

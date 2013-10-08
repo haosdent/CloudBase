@@ -1,10 +1,8 @@
 (ns cloud-base.core
   (:use org.httpkit.server
-        cloud-base.route
-        [compojure.handler :only [site]])) 
+        cloud-base.route))  
 
 (defn -main [& args]
-  (run-server (site #'all-routes) {:port 8080}))
-
+  (run-server route {:port 8080}))
 
 
