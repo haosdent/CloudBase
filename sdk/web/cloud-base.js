@@ -1,5 +1,5 @@
 (function(){
-    var server = 'ws://localhost:8080';
+    var server = 'ws://10.68.176.237:8080';
 
     var Socket = function(server){
         var that = this;
