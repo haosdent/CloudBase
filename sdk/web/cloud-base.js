@@ -1,5 +1,5 @@
 (function(){
-    var server = 'ws://10.68.176.237:8080';
+    var server = 'ws://localhost:8080';
 
     var Socket = function(server){
         var that = this;
@@ -111,19 +111,20 @@
             //this.getter('app').listen(this, cb);
             this.up();
             var that = this;
-            var intervalId = setInterval(function(){
-                                 var version = that.getter('version');
-                                 (version === undefined) && (version = 0);
-                                 var req = {
-                                     act: 'get'
-                                   , app: that.getter('app').name
-                                   , id: that.id
-                                   , gid: that.getter('gid')
-                                   , version: version
-                                 };
+            var fn = function(){
+                var version = that.getter('version');
+                (version === undefined) && (version = 0);
+                var req = {
+                    act: 'get'
+                  , app: that.getter('app').name
+                  , id: that.id
+                  , gid: that.getter('gid')
+                  , version: version
+                };
 
-                                 socket.send(req, false);
-                             }, 100);
+                socket.send(req, false);
+            };
+            var intervalId = setInterval(fn, 100);
             this.setter('intervalId', intervalId);
         }
       , up: function(){

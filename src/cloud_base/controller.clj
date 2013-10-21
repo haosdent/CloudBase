@@ -1,13 +1,13 @@
 (ns cloud-base.controller
   (:refer-clojure :exclude [get])
-  (:use cheshire.core)
-  (:import [cloud_base.model DB])) 
+  (:require [cheshire.core :refer [generate-string]]
+            [cloud-base.model :refer [create-act get-act put-act]]))   
 
 (defmacro defcontrol
   [name params & forms]
   `(defn ~name ~params
      (let [req# (first ~params)]
-       (generate-string 
+       (generate-string
         (merge
          {:rid (req# :rid) :gid (req# :gid) :act (req# :act) :cmd "success"}
          (try
@@ -16,16 +16,16 @@
              {:cmd "error" :data (.getMessage e#)}))))))) 
 
 (defcontrol create [req]
-  (DB/create (req :app)))
+  (create-act (req :app)))
 
 (defcontrol get [req]
   (merge {:cmd "update"}
-         (DB/get (req :app)
-                 (req :id)
-                 (req :version))))
+         (get-act (req :app)
+                  (req :id)
+                  (req :version))))
 
 (defcontrol put [req]
-  (DB/put (req :app)
-            (req :id)
-            (req :version)
-            (req :data)))
+  (put-act (req :app)
+           (req :id)
+           (req :version)
+           (req :data)))

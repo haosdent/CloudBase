@@ -1,7 +1,8 @@
 (ns cloud-base.route
-  (:use cheshire.core
-        org.httpkit.server)
-  (:require [cloud-base.controller :as controller]))   
+  (:refer-clojure :exclude [get])
+  (:require [org.httpkit.server :refer :all]
+            [cheshire.core :refer [parse-string]]
+            [cloud-base.controller :refer [create get put]]))    
 
 (defn route [request]
   (with-channel request channel
@@ -12,6 +13,6 @@
                         act (req :act)]
                     (send! channel 
                            (cond
-                            (= act "create") (controller/create req)
-                            (= act "get")    (controller/get    req)
-                            (= act "put")    (controller/put    req))))))))
+                            (= act "create") (create req)
+                            (= act "get")    (get    req)
+                            (= act "put")    (put    req))))))))
