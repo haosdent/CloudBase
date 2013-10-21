@@ -1,13 +1,18 @@
-# cloud-base
+#CloudBase
+----------
+CloudBase is an opensource Baas implemention modeled after Firebase.
 
-A Clojure library designed to ... well, that part is up to you.
+## Status
 
-## Usage
+Just a preview version.
 
-FIXME
+## [Support Plan][1]
+
+See issues.
 
 ## License
 
-Copyright © 2013 FIXME
+Distributed under the Apache License, the same as HBase.
 
-Distributed under the Eclipse Public License, the same as Clojure.
+
+  [1]: https://github.com/haosdent/CloudBase/issues?labels=enhancement&page=1&state=open
