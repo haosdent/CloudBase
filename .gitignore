@@ -6,6 +6,10 @@ pom.xml
 pom.xml.asc
 *.jar
 *.class
+*.iml
+*.ipr
+*.iws
+.idea
 .lein-deps-sum
 .lein-failures
 .lein-plugins
