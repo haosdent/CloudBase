@@ -81,7 +81,6 @@ body {
 .bs-docs-nav {
   text-shadow: 0 -1px 0 rgba(0,0,0,.15);
   background-color: #1d9d74;
-  border-color: #463265;
   border-top: 1px solid #34a782;
   border-bottom: 1px solid #1b926c;
   box-shadow: 0 1px 0 rgba(255,255,255,.1);
@@ -246,6 +245,8 @@ body {
     text-align: left;
     padding-top:    140px;
     padding-bottom: 240px;
+    border-bottom: 1px solid #1b926c;
+    box-shadow: 0 1px 0 rgba(255,255,255,.1);
   }
   .bs-masthead h1 {
     font-size: 100px;
