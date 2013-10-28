@@ -12,9 +12,16 @@ public class Socket {
 
   public final static String ERROR = "error";
   public final static String SUCCESS = "success";
+  private final static String url = "";
+  private final static Socket instance = new Socket(url);
+  
   private AutobahnConnection entity;
   private Map<String, Listenable> listeners =
       new ConcurrentHashMap<String, Listenable>();
+
+  public static Socket getInstance(){
+    return instance;
+  }
 
   public Socket(String url) {
     entity = new AutobahnConnection();
@@ -37,6 +44,7 @@ public class Socket {
     else if (cmd.equals(SUCCESS))
       this.success(resp);
     Listenable listener = listeners.get(gid);
+    listener.run(resp.cmd, resp);
   }
 
   public void register(String gid, Listenable listener) {
