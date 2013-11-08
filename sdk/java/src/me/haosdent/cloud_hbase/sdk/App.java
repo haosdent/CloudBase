@@ -2,11 +2,9 @@ package me.haosdent.cloud_hbase.sdk;
 
 import java.util.concurrent.Callable;
 
-public class App implements Listenable {
+import static me.haosdent.cloud_hbase.sdk.Constants.*;
 
-  public final static String SUCCESS = "success";
-  public final static String UPDATE = "update";
-  public final static String ERROR = "error";
+public class App implements Listenable {
 
   private String name;
   private String gid;
@@ -22,6 +20,10 @@ public class App implements Listenable {
     return gid;
   }
 
+  public String getName(){
+    return name;
+  }
+
   @Override
   public void run(String cmd, Resp resp){
     if (cmd.equals(SUCCESS))
@@ -32,8 +34,9 @@ public class App implements Listenable {
       update(resp);
   }
 
-  public void create(String id, String name, Callable cb){
-    //TODO
+  public Model create(String id, String name, Callable cb){
+    Model model = new Model(this, id, name, cb);
+    return model;
   }
 
   public void update(Resp resp){
@@ -41,10 +44,8 @@ public class App implements Listenable {
   }
 
   public void error(Resp resp){
-    //TODO
   }
 
   public void success(Resp resp){
-    //TODO
   }
 }
