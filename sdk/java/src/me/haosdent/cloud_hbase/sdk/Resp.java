@@ -1,6 +1,7 @@
 package me.haosdent.cloud_hbase.sdk;
 
 public class Resp {
+  public long version;
   public long rid;
   public String gid;
   public String act;
