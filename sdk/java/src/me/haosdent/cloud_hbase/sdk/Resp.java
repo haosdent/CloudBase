@@ -6,11 +6,13 @@ public class Resp {
   public String gid;
   public String act;
   public String cmd;
+  public String dataStr;
 
-  public Resp(long rid, String gid, String act, String cmd){
+  public Resp(long rid, String gid, String act, String cmd, String dataStr){
     this.rid = rid;
     this.gid = gid;
     this.act = act;
     this.cmd = cmd;
+    this.dataStr = dataStr;
   }
 }

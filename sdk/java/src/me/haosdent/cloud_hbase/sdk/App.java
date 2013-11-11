@@ -1,7 +1,5 @@
 package me.haosdent.cloud_hbase.sdk;
 
-import java.util.concurrent.Callable;
-
 import static me.haosdent.cloud_hbase.sdk.Constants.*;
 
 public class App implements Listenable {
@@ -9,23 +7,23 @@ public class App implements Listenable {
   private String name;
   private String gid;
 
-  public App(String name){
+  public App(String name) {
     this.name = name;
     this.gid = name;
-    Socket.getInstance().register(this.name, this);
+    Socket.register(this.name, this);
   }
 
   @Override
-  public String getGid(){
+  public String getGid() {
     return gid;
   }
 
-  public String getName(){
+  public String getName() {
     return name;
   }
 
   @Override
-  public void run(String cmd, Resp resp){
+  public void run(String cmd, Resp resp) {
     if (cmd.equals(SUCCESS))
       success(resp);
     else if (cmd.equals(ERROR))
@@ -34,18 +32,18 @@ public class App implements Listenable {
       update(resp);
   }
 
-  public Model create(String id, String name, Callable cb){
+  public Model create(String id, String name, Callback cb) {
     Model model = new Model(this, id, name, cb);
     return model;
   }
 
-  public void update(Resp resp){
+  public void update(Resp resp) {
     System.out.println("Create " + this.name + " successfullly!");
   }
 
-  public void error(Resp resp){
+  public void error(Resp resp) {
   }
 
-  public void success(Resp resp){
+  public void success(Resp resp) {
   }
 }

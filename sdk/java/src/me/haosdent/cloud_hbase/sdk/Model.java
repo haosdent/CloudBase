@@ -1,53 +1,39 @@
 package me.haosdent.cloud_hbase.sdk;
 
-import java.util.concurrent.Callable;
-
 import static me.haosdent.cloud_hbase.sdk.Constants.*;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 public class Model implements Listenable {
-
-  public static class Updater extends Thread {
-    private Model model;
-    private Socket socket = Socket.getInstance();
-
-    public Updater(Model model){
-      this.model = model;
-    }
-
-    @Override
-    public void run(){
-      while(true){
-        Req req = model.getReq();
-        socket.send(req, false);
-        try {
-          sleep(100);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-  }
 
   private String gid;
   private String id;
   private String name;
   private long version;
-  private Callable cb;
-  private Updater updater;
+  private JSONObject data;
+  private Callback cb;
+  private Syncer syncer;
+  private App app;
 
-  public Model(App app, String id, String name, Callable cb) {
+  public Model(App app, String id, String name, Callback cb) {
     this.name = name;
     this.id = id;
     this.cb = cb;
+    this.app = app;
 
     this.gid = app.getName() + this.name + this.id;
-    this.updater = new Updater(this);
+    this.syncer = new Syncer(this);
     this.on();
   }
 
   @Override
   public String getGid() {
     return gid;
+  }
+
+  public JSONObject getData() {
+    return data;
   }
 
   @Override
@@ -60,40 +46,65 @@ public class Model implements Listenable {
       update(resp);
   }
 
-  public void save(){
-    //TODO
-    Req req = new Req();
+  public void save() {
+    Req req = putReq();
+    Socket.send(req, true);
   }
 
-  public void on(){
+  public void on() {
     this.up();
-    updater.start();
+    syncer.start();
   }
 
-  public void up(){
-    updater.interrupt();
+  public void up() {
+    Thread.State state = syncer.getState();
+    if (state != Thread.State.NEW && state != Thread.State.TERMINATED)
+      syncer.interrupt();
   }
 
-  public void update(Resp resp){
-    //TODO
+  public void update(Resp resp) {
     if (resp.version == 0)
       return;
+    this.version = resp.version;
+    this.data = JSON.parseObject(resp.dataStr);
+    this.cb.run();
+  }
 
-    try {
-      this.cb.call();
-    } catch (Exception e) {
-      e.printStackTrace();
+  public void error(Resp resp) {
+  }
+
+  public void success(Resp resp) {
+  }
+
+  public Req getReq() {
+    Req req = new Req(ACT_GET, app.getName(), id, gid, version);
+    return req;
+  }
+
+  public Req putReq() {
+    Req req = new Req(ACT_PUT, app.getName(), id, gid, version,
+            JSON.toJSONString(data));
+    return req;
+  }
+
+  public static class Syncer extends Thread {
+    private Model model;
+
+    public Syncer(Model model) {
+      this.model = model;
     }
-  }
 
-  public void error(Resp resp){
-  }
-
-  public void success(Resp resp){
-  }
-
-  public Req getReq(){
-    //TODO
-    return null;
+    @Override
+    public void run() {
+      while (true) {
+        Req req = model.getReq();
+        Socket.send(req, false);
+        try {
+          sleep(100);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }
