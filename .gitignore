@@ -3,6 +3,8 @@
 /classes
 /checkouts
 /sdk/java/target
+/examples/android/target
+/examples/android/libs
 pom.xml.asc
 *.jar
 *.class
