@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Pick" >
+        <afzkl.development.colorpickerview.preference.ColorPickerPreference
+            android:defaultValue="0xFF000000"
+            android:key="color"
+            android:summary=""
+            android:title="Pick a color" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Favorite colors" >
+    </PreferenceCategory>
+
+</PreferenceScreen>
