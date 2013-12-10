@@ -24,5 +24,13 @@ public class ColorActivity extends PreferenceActivity {
       super.onCreate(savedInstanceState);
       addPreferencesFromResource(R.xml.main);
     }
+
+    public void likeColor() {
+      likeColor(1);
+    }
+
+    public void likeColor(int value) {
+      // TODO
+    }
   }
 }
