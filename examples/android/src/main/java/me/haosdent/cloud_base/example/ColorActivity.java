@@ -1,10 +1,13 @@
 package me.haosdent.cloud_base.example;
 
 import afzkl.development.colorpickerview.dialog.ColorPickerDialog;
+import afzkl.development.colorpickerview.preference.ColorPickerPreference;
+import afzkl.development.colorpickerview.view.ColorPanelView;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
@@ -30,6 +33,10 @@ public class ColorActivity extends PreferenceActivity {
     }
 
     public void likeColor(int value) {
+      // TODO
+    }
+
+    public void addColor(int color) {
       // TODO
     }
   }

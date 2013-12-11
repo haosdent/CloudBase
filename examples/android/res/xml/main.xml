@@ -6,7 +6,7 @@
             android:key="color"
             android:title="Add a color" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Favorite colors" >
+    <PreferenceCategory android:title="Favorite colors" android:key="test" >
     </PreferenceCategory>
 
 </PreferenceScreen>
