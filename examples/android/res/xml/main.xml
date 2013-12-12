@@ -1,12 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="Add" >
-        <me.haosdent.cloud_base.example.ColorPickerDialog
+        <me.haosdent.cloud_base.example.ColorPickerPreference
             android:defaultValue="0xFF000000"
             android:key="color"
             android:title="Add a color" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Favorite colors" android:key="test" >
+    <PreferenceCategory android:title="Favorite colors">
     </PreferenceCategory>
 
 </PreferenceScreen>

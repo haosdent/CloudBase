@@ -1,0 +1,5 @@
+<me.haosdent.cloud_base.example.ColorStatView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="25dp"
+	android:layout_height="25dp"
+    android:id="@id/color_preview"
+/>

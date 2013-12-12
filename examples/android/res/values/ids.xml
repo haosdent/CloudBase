@@ -1,5 +1,5 @@
 <resources>
     
-    <item type="id" name="color_list" />
+    <item type="id" name="color_preview" />
 
 </resources>
