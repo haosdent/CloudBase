@@ -1,6 +1,6 @@
-(ns cloud-base.core-test
+(ns cloud-hbase.core-test
   (:require [clojure.test :refer :all]
-            [cloud-base.core :refer :all]))
+            [cloud-hbase.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

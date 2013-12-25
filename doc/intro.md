@@ -1,3 +1,18 @@
-# Introduction to cloud-base
+#CloudHBase
 
-TODO: write [great documentation](http://jacobian.org/writing/great-documentation/what-to-write/)
+CloudHBase is an opensource Baas implemention modeled after Firebase.
+
+## Status
+
+Upder rapidly development.
+
+## [Support Plan][1]
+
+See issues.
+
+## License
+
+Distributed under the Apache License, the same as HBase.
+
+
+  [1]: https://github.com/haosdent/CloudBase/issues?labels=enhancement&page=1&state=open

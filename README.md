@@ -1,10 +1,10 @@
-#CloudBase
-----------
-CloudBase is an opensource Baas implemention modeled after Firebase.
+#CloudHBase
+
+CloudHBase is an opensource Baas implemention modeled after Firebase.
 
 ## Status
 
-Just a preview version.
+Upder rapidly development.
 
 ## [Support Plan][1]
 

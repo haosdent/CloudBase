@@ -1,4 +1,4 @@
-(ns cloud-base.model
+(ns cloud-hbase.model
   (:import java.io.IOException
            java.net.UnknownHostException
            [java.util HashMap Map]

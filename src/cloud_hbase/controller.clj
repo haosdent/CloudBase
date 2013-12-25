@@ -1,7 +1,7 @@
-(ns cloud-base.controller
+(ns cloud-hbase.controller
   (:refer-clojure :exclude [get])
   (:require [cheshire.core :refer [generate-string]]
-            [cloud-base.model :refer [create-act get-act put-act]]))   
+            [cloud-hbase.model :refer [create-act get-act put-act]]))   
 
 (defmacro defcontrol
   [name params & forms]

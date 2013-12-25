@@ -1,6 +1,6 @@
-(defproject cloud-base "0.1.0-SNAPSHOT"
-  :description "CloudBase is an opensource Baas implemention modeled after Firebase."
-  :url "http://haosdent.github.io/CloudBase"
+(defproject cloud-hbase "0.1.0-SNAPSHOT"
+  :description "CloudHBase is an opensource Baas implemention modeled after Firebase."
+  :url "http://haosdent.github.io/CloudHBase"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :plugins [[lein2-eclipse "2.0.0"]]
@@ -12,4 +12,4 @@
                  [org.apache.hbase/hbase "0.94-adh3u3"]
                  [org.apache.hadoop/hadoop-core "2.0.0-mr1-cdh4.3.1"]
                  [org.apache.hadoop/hadoop-client "2.0.0-cdh4.3.1"]]
-  :main cloud-base.core)
+  :main cloud-hbase.core)
