@@ -27,5 +27,5 @@
 (defcontrol put [req]
   (put-act (req :app)
            (req :id)
-           (req :version)
+           (req :pre-data)
            (req :data)))

@@ -22,12 +22,14 @@
   (HTablePool. conf 50 PoolMap$PoolType/ThreadLocal))
 
 (defn to-bytes [val]
-  (Bytes/toBytes val)) 
+  (if (nil? val)
+    nil
+    (Bytes/toBytes val))) 
 
 (def family "cf")
 (def family-bytes (to-bytes family))
-(def key-data "data")
-(def key-data-bytes (to-bytes key-data))
+(def qual "data")
+(def qual-bytes (to-bytes qual))
 
 (defn create-act [table] 
   (when-not (try
@@ -38,14 +40,24 @@
                     (.addFamily 
                      (HColumnDescriptor. family)))))) 
 
-(defn put-act [table row version data]
-  (let [htable (.getTable put-pool table)]
-    (.put htable
-          (.add (Put. (to-bytes row))
+(defn put-act [table row pre-data data]
+  (let [htable (.getTable put-pool table)
+        row-bytes (to-bytes row)
+        pre-data-bytes (to-bytes pre-data)
+        data-bytes (to-bytes data)
+        put (.add (Put. row-bytes)
                 family-bytes
-                key-data-bytes
-                version
-                (to-bytes data)))
+                qual-bytes
+                data-bytes)]    
+    (if (nil? pre-data-bytes)
+      (.put htable put)
+      (when (.checkAndPut htable
+                        row-bytes
+                        family-bytes
+                        qual-bytes
+                        pre-data-bytes
+                        put)
+        (throw (.IOException "Check failed."))))
     (.close htable)))
 
 (defn get-act [table row version]
@@ -55,7 +67,7 @@
                        (.setTimeRange (inc version) Long/MAX_VALUE)
                        (.setMaxVersions 1)))
         data-bytes (.getValue result
-                              family-bytes key-data-bytes)]
+                              family-bytes qual-bytes)]
     (.close htable)
     (if data-bytes
       {:version (.getTimestamp 
